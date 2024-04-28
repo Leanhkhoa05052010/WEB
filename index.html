@@ -21,6 +21,42 @@
         <button onclick="increaseScore('teamB')">Ghi bàn cho Đội B</button>
         <div class="timer" id="timer">00:00</div> <!-- Thêm div để hiển thị thời gian -->
     </div>
-    <script src="script.js"></script>
+    <script>
+        let teamAScore = 0;
+        let teamBScore = 0;
+
+        function increaseScore(team) {
+            if (team === 'teamA') {
+                teamAScore++;
+                document.getElementById('teamAScore').innerText = teamAScore;
+            } else if (team === 'teamB') {
+                teamBScore++;
+                document.getElementById('teamBScore').innerText = teamBScore;
+            }
+        }
+
+        // Hàm để hiển thị thời gian chạy
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                // Hiển thị thời gian trong div có id="timer"
+                document.getElementById('timer').innerText = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000); // 1000 milliseconds = 1 giây
+        }
+
+        window.onload = function () {
+            startTimer(60 * 20); // 20 phút là 20 * 60 giây
+        };
+    </script>
 </body>
 </html>

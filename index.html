@@ -69,7 +69,7 @@
         </div>
         <button onclick="increaseScore('teamA')">Ghi bàn cho Đội A</button>
         <button onclick="increaseScore('teamB')">Ghi bàn cho Đội B</button>
-        <div class="timer" id="timer">10:00</div>
+        <div class="timer" id="timer">02:00</div>
     </div>
     <script>
         let teamAScore = 0;
@@ -106,16 +106,17 @@
                 document.getElementById('timer').innerText = minutes + ":" + seconds;
 
                 if (timePassed <= 0) {
-                    start = Date.now();
+                    // Thực hiện hành động khi thời gian kết thúc, ví dụ: hiển thị thông báo
+                    clearInterval(timer); // Dừng đếm ngược
                 }
-                requestAnimationFrame(runTimer);
             }
 
             runTimer();
+            timer = setInterval(runTimer, 1000); // Gọi hàm runTimer mỗi giây
         }
 
         window.onload = function () {
-            startTimer(60 * 20);
+            startTimer(120 * 1000); // 2 phút là 120 giây
         };
     </script>
 </body>

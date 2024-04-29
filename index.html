@@ -5,6 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tỉ số trận đấu</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .scoreboard {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .scoreboard-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .team {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        .team-name {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .team-score {
+            display: block;
+            font-size: 36px;
+        }
+
+        button {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .timer {
+            font-size: 48px;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
     <div class="scoreboard">
@@ -19,7 +69,7 @@
         </div>
         <button onclick="increaseScore('teamA')">Ghi bàn cho Đội A</button>
         <button onclick="increaseScore('teamB')">Ghi bàn cho Đội B</button>
-        <div class="timer" id="timer">10:00</div> <!-- Thêm div để hiển thị thời gian -->
+        <div class="timer" id="timer">10:00</div>
     </div>
     <script>
         let teamAScore = 0;
@@ -35,27 +85,37 @@
             }
         }
 
-        // Hàm để hiển thị thời gian chạy
         function startTimer(duration) {
-            let timer = duration, minutes, seconds;
-            setInterval(function () {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
+            let start = Date.now(), timer, minutes, seconds;
+
+            function runTimer() {
+                let now = Date.now();
+                let diff = now - start;
+                let timePassed = duration - diff;
+
+                if (timePassed < 0) {
+                    timePassed = 0;
+                }
+
+                minutes = Math.floor((timePassed / (1000 * 60)) % 60);
+                seconds = Math.floor((timePassed / 1000) % 60);
 
                 minutes = minutes < 10 ? "0" + minutes : minutes;
                 seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                // Hiển thị thời gian trong div có id="timer"
                 document.getElementById('timer').innerText = minutes + ":" + seconds;
 
-                if (--timer < 0) {
-                    timer = duration;
+                if (timePassed <= 0) {
+                    start = Date.now();
                 }
-            }, 1000); // 1000 milliseconds = 1 giây
+                requestAnimationFrame(runTimer);
+            }
+
+            runTimer();
         }
 
         window.onload = function () {
-            startTimer(60 * 20); // 20 phút là 20 * 60 giây
+            startTimer(60 * 20);
         };
     </script>
 </body>

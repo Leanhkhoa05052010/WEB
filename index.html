@@ -74,6 +74,9 @@
     <script>
         let teamAScore = 0;
         let teamBScore = 0;
+        let isCounting = true; // Biến để theo dõi trạng thái của việc đếm ngược
+        let timer; // Biến để lưu trữ interval
+        let remainingTime = 120 * 1000; // Thời gian còn lại mặc định là 2 phút
 
         function increaseScore(team) {
             if (team === 'teamA') {
@@ -86,28 +89,30 @@
         }
 
         function startTimer(duration) {
-            let start = Date.now(), timer, minutes, seconds;
+            let start = Date.now(), minutes, seconds;
 
             function runTimer() {
-                let now = Date.now();
-                let diff = now - start;
-                let timePassed = duration - diff;
+                if (isCounting) { // Chỉ cập nhật thời gian khi đang đếm ngược
+                    let now = Date.now();
+                    let diff = now - start;
+                    remainingTime = duration - diff; // Cập nhật thời gian còn lại
 
-                if (timePassed < 0) {
-                    timePassed = 0;
-                }
+                    if (remainingTime < 0) {
+                        remainingTime = 0;
+                    }
 
-                minutes = Math.floor((timePassed / (1000 * 60)) % 60);
-                seconds = Math.floor((timePassed / 1000) % 60);
+                    minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
+                    seconds = Math.floor((remainingTime / 1000) % 60);
 
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
 
-                document.getElementById('timer').innerText = minutes + ":" + seconds;
+                    document.getElementById('timer').innerText = minutes + ":" + seconds;
 
-                if (timePassed <= 0) {
-                    // Thực hiện hành động khi thời gian kết thúc, ví dụ: hiển thị thông báo
-                    clearInterval(timer); // Dừng đếm ngược
+                    if (remainingTime <= 0) {
+                        clearInterval(timer); // Dừng đếm ngược
+                        // Thực hiện hành động khi thời gian kết thúc, ví dụ: hiển thị thông báo
+                    }
                 }
             }
 
@@ -116,8 +121,20 @@
         }
 
         window.onload = function () {
-            startTimer(120 * 1000); // 2 phút là 120 giây
+            startTimer(remainingTime); // Sử dụng remainingTime để bắt đầu đếm ngược
         };
+
+        // Bắt sự kiện khi bấm phím dấu cách
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode === 32) { // 32 là mã ASCII cho dấu cách
+                isCounting = !isCounting; // Đảo ngược trạng thái của việc đếm ngược
+                if (!isCounting) {
+                    clearInterval(timer); // Dừng interval nếu không đếm ngược
+                } else {
+                    startTimer(remainingTime); // Nếu đang đếm ngược thì bắt đầu lại với thời gian còn lại
+                }
+            }
+        });
     </script>
 </body>
 </html>
